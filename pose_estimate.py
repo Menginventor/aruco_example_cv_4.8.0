@@ -39,7 +39,7 @@ def my_estimatePoseSingleMarkers(corners, marker_size, mtx, distortion):
     trash = []
     rvecs = []
     tvecs = []
-    i = 0
+    
     for c in corners:
         nada, R, t = cv2.solvePnP(marker_points, c, mtx, distortion, False, cv2.SOLVEPNP_IPPE_SQUARE)
         rvecs.append(R)
