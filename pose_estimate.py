@@ -41,7 +41,7 @@ def my_estimatePoseSingleMarkers(corners, marker_size, mtx, distortion):
     tvecs = []
     i = 0
     for c in corners:
-        nada, R, t = cv2.solvePnP(marker_points, corners[i], mtx, distortion, False, cv2.SOLVEPNP_IPPE_SQUARE)
+        nada, R, t = cv2.solvePnP(marker_points, c, mtx, distortion, False, cv2.SOLVEPNP_IPPE_SQUARE)
         rvecs.append(R)
         tvecs.append(t)
         trash.append(nada)
@@ -76,10 +76,14 @@ while True:
     arucoParams = detector.getDetectorParameters
     markerCorners, markerIds, rejectedCandidates = detector.detectMarkers(dst)
     if not markerIds is None:
-        for idx in range(len(markerIds)):
-            rvecs, tvecs, trash = my_estimatePoseSingleMarkers(markerCorners[idx], 5.3, newcameramtx, dist)
 
-            print(tvecs[0][2])
+        rvecs, tvecs, trash = my_estimatePoseSingleMarkers(markerCorners, 5.3, newcameramtx, dist)
+        #cv::drawFrameAxes(outputImage, cameraMatrix, distCoeffs, rvec, tvec, 0.1);
+        for idx in range(len(markerIds)):
+
+            cv2.drawFrameAxes(dst,mtx,dist,rvecs[idx],tvecs[idx],5)
+            print('marker id:%d, pos_x = %f,pos_y = %f, pos_z = %f' % (markerIds[idx],tvecs[idx][0],tvecs[idx][1],tvecs[idx][2]))
+
     cv2.aruco.drawDetectedMarkers(dst, markerCorners, markerIds)
     # print(markerIds)
     cv2.imshow('detect', dst)
